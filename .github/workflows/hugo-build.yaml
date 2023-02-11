@@ -12,12 +12,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    # Get the code
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-
-    # Install languages
+    # Install global tools
     - name: Install Go  🛠️
       uses: actions/setup-go@v3
       with:
@@ -27,16 +22,37 @@ jobs:
       with:
         hugo-version: '0.101.0'
 
-    # Install dependencies
-    - name: Install Go Deps 🌎
+    # Get the site
+    - name: Checkout workflow ⬇️
+      uses: actions/checkout@v3
+      with:
+        repo: 'gauntface/workflow-static-site'
+        path: 'workflow-static-site'
+
+    # Install action dependencies
+    - name: Install action Go Deps 🌎
       run: |
         go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
         go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
         go install github.com/tdewolff/minify/v2/cmd/minify@latest
+    - name: Install action NPM Deps 🌎
+      run: |
+        cd ./workflow-static-site/
+        npm install -g eslint stylelint stylelint-config
+
+    # Get the site
+    - name: Checkout site ⬇️
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        path: 'hugo-site'
+
+    # Install dependencies
+
     - name: Install NPM Deps 🌎
       run: |
+        cd ./hugo-site/
         npm install
-        npm install -g eslint stylelint stylelint-config
 
     # Configure AWS for genimgs and publish
     - name: Configure AWS Credentials ☁️
