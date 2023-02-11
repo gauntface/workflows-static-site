@@ -1,0 +1,61 @@
+name: Hugo Build 🔧
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    # Get the code
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    # Install languages
+    - name: Install Go  🛠️
+      uses: actions/setup-go@v3
+      with:
+        go-version: '^1.18.3'
+    - name: Install Hugo  🛠️
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.101.0'
+
+    # Install dependencies
+    - name: Install Go Deps 🌎
+      run: |
+        go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
+        go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
+        go install github.com/tdewolff/minify/v2/cmd/minify@latest
+    - name: Install NPM Deps 🌎
+      run: |
+        npm install
+        npm install -g eslint stylelint stylelint-config
+
+    # Configure AWS for genimgs and publish
+    - name: Configure AWS Credentials ☁️
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    # Do our work
+    - name: Lint 🌟
+      if: always()
+      run: eslint '.' && stylelint '**/*.css'
+    - name: Build 🔧
+      if: always()
+      run: hugo
+    - name: Test 🧪
+      if: always()
+      run: npm run test
