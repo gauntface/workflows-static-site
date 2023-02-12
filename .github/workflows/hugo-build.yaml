@@ -65,8 +65,8 @@ jobs:
       if: always()
       run: |
         cd ./workflows-static-site/
-        eslint    --config './.eslintrc'         '../hugo-site/'
-        stylelint --config './.stylelintrc.json' '../hugo-site/**/*.css'
+        npm run eslint    -- '../hugo-site/'
+        npm run styleline -- '../hugo-site/**/*.css'
     - name: Build 🔧
       if: always()
       run: |
