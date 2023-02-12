@@ -13,7 +13,7 @@ jobs:
   workflows:
     uses: gauntface/workflows-static-site/.github/workflows/lint.yaml@main
 
-  build-and-test:
+  hugo-build:
     runs-on: ubuntu-latest
     steps:
     # Install global tools
