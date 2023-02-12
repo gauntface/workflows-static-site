@@ -7,6 +7,7 @@ on:
         required: true
       AWS_SECRET_ACCESS_KEY:
         required: true
+      VIMEO_TOKEN:
 
 jobs:
   build-and-test:
@@ -65,10 +66,16 @@ jobs:
     # Do our work
     - name: Lint 🌟
       if: always()
-      run: eslint '.' && stylelint '**/*.css'
+      run: |
+        eslint -c './workflow-static-site/.eslintrc' './hugo-site/'
+        stylelint --config './workflow-static-site/.stylelintrc.json' './hugo-site/**/*.css'
     - name: Build 🔧
       if: always()
-      run: hugo
+      run: |
+        cd ./hugo-site/
+        hugo
+        htmlassets --vimeo=$VIMEO_TOKEN
+        minify -r --match=\\.html -o ./public ./public/*
     - name: Test 🧪
       if: always()
       run: npm run test --if-present
