@@ -10,6 +10,9 @@ on:
       VIMEO_TOKEN:
 
 jobs:
+  workflows:
+    uses: gauntface/workflows-static-site/.github/workflows/lint.yaml@main
+
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -61,13 +64,6 @@ jobs:
         aws-region: us-west-1
 
     # Do our work
-    - name: Lint 🌟
-      if: always()
-      run: |
-        cd ./workflows-static-site/
-        npm run eslint    -- '../hugo-site/'
-        npm run stylelint -- '../hugo-site/**/*.css'
-        npm run prettier -- '../hugo-site/**/*.css' --check
     - name: Build 🔧
       if: always()
       run: |
