@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "eslint": "eslint --config './eslintrc'",
+    "eslint": "eslint --config './.eslintrc'",
     "stylelint": "stylelint --config './.stylelintrc.json'"
   },
   "devDependencies": {
