@@ -25,11 +25,18 @@ jobs:
         npm install
 
     # Do our work
-    - name: Lint 🌟
-      if: always()
+    - name: ESLint 🌟
       run: |
         cd ./workflows-static-site/
         npm run eslint    -- '../project-repo/' --no-error-on-unmatched-pattern
+
+    - name: Stylelint 🌟
+      run: |
+        cd ./workflows-static-site/
         npm run stylelint -- '../project-repo/**/*.css'
+
+    - name: Prettier 🌟
+      run: |
+        cd ./workflows-static-site/
         npm run prettier -- '../project-repo/**/*.css' --check
 
