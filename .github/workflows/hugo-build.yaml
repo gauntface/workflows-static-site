@@ -27,7 +27,7 @@ jobs:
     - name: Checkout workflow ⬇️
       uses: actions/checkout@v3
       with:
-        repo: 'gauntface/workflow-static-site'
+        repository: 'gauntface/workflow-static-site'
         path: 'workflow-static-site'
     - name: Checkout site ⬇️
       uses: actions/checkout@v3
