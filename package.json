@@ -1,12 +1,15 @@
 {
   "scripts": {
-    "eslint": "eslint --config './.eslintrc'",
-    "stylelint": "stylelint --config './.stylelintrc.json'"
+    "eslint": "eslint --config './.eslintrc.json'",
+    "stylelint": "stylelint --config './.stylelintrc.json'",
+    "prettier": "prettier --config './.prettierrc.json'"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "eslint": "^8.34.0",
+    "prettier": "^2.8.4",
     "stylelint": "^15.0.0",
-    "stylelint-config": "^0.1.1"
+    "stylelint-config": "^0.1.1",
+    "stylelint-config-standard": "^30.0.1"
   }
 }
