@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  build-and-test:
+  lint:
     runs-on: ubuntu-latest
     steps:
     # Get the repos
