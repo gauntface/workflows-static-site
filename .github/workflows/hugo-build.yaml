@@ -23,12 +23,17 @@ jobs:
       with:
         hugo-version: '0.101.0'
 
-    # Get the site
+    # Get the repos
     - name: Checkout workflow ⬇️
       uses: actions/checkout@v3
       with:
         repo: 'gauntface/workflow-static-site'
         path: 'workflow-static-site'
+    - name: Checkout site ⬇️
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+        path: 'hugo-site'
 
     # Install action dependencies
     - name: Install action Go Deps 🌎
@@ -41,15 +46,7 @@ jobs:
         cd ./workflow-static-site/
         npm install -g eslint stylelint stylelint-config
 
-    # Get the site
-    - name: Checkout site ⬇️
-      uses: actions/checkout@v3
-      with:
-        submodules: true
-        path: 'hugo-site'
-
-    # Install dependencies
-
+    # Install site dependencies
     - name: Install NPM Deps 🌎
       run: |
         cd ./hugo-site/
@@ -67,8 +64,9 @@ jobs:
     - name: Lint 🌟
       if: always()
       run: |
-        eslint -c './workflow-static-site/.eslintrc' './hugo-site/'
-        stylelint --config './workflow-static-site/.stylelintrc.json' './hugo-site/**/*.css'
+        cd ./workflow-static-site/
+        eslint    --config './.eslintrc'         '../hugo-site/'
+        stylelint --config './.stylelintrc.json' '../hugo-site/**/*.css'
     - name: Build 🔧
       if: always()
       run: |
