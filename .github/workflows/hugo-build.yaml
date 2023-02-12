@@ -27,9 +27,8 @@ jobs:
     - name: Checkout workflow ⬇️
       uses: actions/checkout@v3
       with:
-        repository: 'gauntface/workflow-static-site'
-        ref: 'main'
-        path: 'workflow-static-site'
+        repository: 'gauntface/workflows-static-site'
+        path: 'workflows-static-site'
     - name: Checkout site ⬇️
       uses: actions/checkout@v3
       with:
@@ -44,7 +43,7 @@ jobs:
         go install github.com/tdewolff/minify/v2/cmd/minify@latest
     - name: Install action NPM Deps 🌎
       run: |
-        cd ./workflow-static-site/
+        cd ./workflows-static-site/
         npm install -g eslint stylelint stylelint-config
 
     # Install site dependencies
@@ -65,7 +64,7 @@ jobs:
     - name: Lint 🌟
       if: always()
       run: |
-        cd ./workflow-static-site/
+        cd ./workflows-static-site/
         eslint    --config './.eslintrc'         '../hugo-site/'
         stylelint --config './.stylelintrc.json' '../hugo-site/**/*.css'
     - name: Build 🔧
