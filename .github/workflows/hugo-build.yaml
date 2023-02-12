@@ -44,7 +44,7 @@ jobs:
     - name: Install action NPM Deps 🌎
       run: |
         cd ./workflows-static-site/
-        npm install -g eslint stylelint stylelint-config
+        npm install
 
     # Install site dependencies
     - name: Install NPM Deps 🌎
