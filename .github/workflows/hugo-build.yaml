@@ -78,4 +78,6 @@ jobs:
         minify -r --match=\\.html -o ./public ./public/*
     - name: Test 🧪
       if: always()
-      run: npm run test --if-present
+      run: |
+        cd ./hugo-site/
+        npm run test --if-present
