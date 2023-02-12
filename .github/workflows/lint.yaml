@@ -13,7 +13,7 @@ jobs:
       with:
         repository: 'gauntface/workflows-static-site'
         path: 'workflows-static-site'
-    - name: Checkout site ⬇️
+    - name: Checkout project ⬇️
       uses: actions/checkout@v3
       with:
         submodules: true
@@ -29,7 +29,7 @@ jobs:
       if: always()
       run: |
         cd ./workflows-static-site/
-        npm run eslint    -- '../project-repo/'
+        npm run eslint    -- '../project-repo/' --no-error-on-unmatched-pattern
         npm run stylelint -- '../project-repo/**/*.css'
         npm run prettier -- '../project-repo/**/*.css' --check
 
