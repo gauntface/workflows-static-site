@@ -13,16 +13,15 @@ on:
         required: true
 
 jobs:
-  workflows-lint:
-    uses: gauntface/workflows-static-site/.github/workflows/lint.yaml@main
-
   workflows-build:
     uses: gauntface/workflows-static-site/.github/workflows/hugo-build.yaml@main
+    id: build
     with:
       ENVIRONMENT: 'production'
 
   publish:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Download artifact 📦
         uses: actions/download-artifact@v3
