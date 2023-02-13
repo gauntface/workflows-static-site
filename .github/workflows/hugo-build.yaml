@@ -8,6 +8,10 @@ on:
       AWS_SECRET_ACCESS_KEY:
         required: true
       VIMEO_TOKEN:
+    inputs:
+      ENVIRONMENT:
+        type: string
+        default: 'test'
 
 jobs:
   workflows:
@@ -42,6 +46,7 @@ jobs:
     - name: Install action Go Deps 🌎
       run: |
         go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
+        go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
         go install github.com/tdewolff/minify/v2/cmd/minify@latest
     - name: Install action NPM Deps 🌎
       run: |
@@ -63,6 +68,9 @@ jobs:
         aws-region: us-west-1
 
     # Do our work
+    - name: Generate images 🖼️
+      if: ${{ inputs.ENVIRONMENT == 'production' }}
+      run: genimgs
     - name: Build 🔧
       if: always()
       run: |

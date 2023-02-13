@@ -16,22 +16,10 @@ jobs:
   workflows-lint:
     uses: gauntface/workflows-static-site/.github/workflows/lint.yaml@main
 
-  genimgs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Go  🛠️
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.18.3'
-
-      - name: Install action Go Deps 🌎
-        run: |
-          go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
-      - name: Generate images 🖼️
-        run: genimgs
-
   workflows-build:
     uses: gauntface/workflows-static-site/.github/workflows/hugo-build.yaml@main
+    with:
+      ENVIRONMENT: 'production'
 
   publish:
     runs-on: ubuntu-latest
