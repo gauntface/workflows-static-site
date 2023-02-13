@@ -10,10 +10,25 @@ import cssnano from 'cssnano';
 const SRC_DIR = 'themes';
 const BUILD_DIR = 'public';
 
+async function generateVarsFile(varFiles) {
+	if (varFiles.length == 0) {
+		return null;
+	}
+
+	const varFilePath = path.join(BUILD_DIR, 'css', '__generated__', 'variables', 'always.css');
+	const content = [];
+	for (const vf of varFiles) {
+		content.push(await readFile(vf));
+	}
+	await writeFile(varFilePath, content.join("\n\n"));
+	return varFilePath;
+}
+
 async function start() {
+	const varFiles = glob.sync(path.join(SRC_DIR, '**', 'variables', '*.css'));
 	const plugins = [
 		postcssGlobalData({
-			files: glob.sync(path.join(SRC_DIR, '**', 'variables', '*.css')),
+			files: varFiles,
 		}),
 		postcssPresetEnv({
 			preserve: true,
@@ -23,6 +38,11 @@ async function start() {
 	const processor = postcss(plugins);
 
 	const cssFiles = glob.sync(path.join(BUILD_DIR, '**', '*.css'));
+	const vfp = await generateVarsFile(varFiles);
+	if (vfp) {
+		cssFiles.push(vfp);
+	}
+
 	for (const c of cssFiles) {
 		if (path.basename(c).indexOf('_') == 0) {
 			// Skip files starting with underscore
