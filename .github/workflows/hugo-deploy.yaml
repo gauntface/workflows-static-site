@@ -16,6 +16,9 @@ on:
 jobs:
   workflows-build:
     uses: gauntface/workflows-static-site/.github/workflows/hugo-build.yaml@main
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
       ENVIRONMENT: 'production'
 
