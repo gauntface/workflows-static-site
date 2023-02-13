@@ -69,6 +69,7 @@ jobs:
       run: |
         cd ./hugo-site/
         hugo
+        node ../workflows-static-site/postcss.js
         htmlassets --vimeo=$VIMEO_TOKEN
         minify -r --match=\\.html -o ./public ./public/*
     - name: Test 🧪

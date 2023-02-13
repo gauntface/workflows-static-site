@@ -7,8 +7,8 @@ import postcssGlobalData from '@csstools/postcss-global-data';
 import postcss from 'postcss';
 import cssnano from 'cssnano';
 
-const SRC_DIR = 'project-repo/themes';
-const BUILD_DIR = 'project-repo/public';
+const SRC_DIR = 'themes';
+const BUILD_DIR = 'public';
 
 async function start() {
 	const plugins = [
