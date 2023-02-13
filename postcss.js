@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'path';
 
 import glob from 'glob';
@@ -15,7 +15,15 @@ async function generateVarsFile(varFiles) {
 		return null;
 	}
 
-	const varFilePath = path.join(BUILD_DIR, 'css', '__generated__', 'variables', 'always.css');
+	const varDir = path.join(BUILD_DIR, 'css', '__generated__', 'variables');
+	const varFilePath = path.join(varDir, 'always.css');
+	try {
+		await mkdir(varDir, {
+			recursive: true,
+		});
+	} catch (e) {
+		// NOOP
+	}
 	const content = [];
 	for (const vf of varFiles) {
 		content.push(await readFile(vf));
