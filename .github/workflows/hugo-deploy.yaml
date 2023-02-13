@@ -32,5 +32,5 @@ jobs:
           name: hugo-site
           path: hugo-site
       - name: Publish to AWS
-        run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./public/" --bucket_name="${{ inputs.S3_BUCKET_NAME }}" --delete_exclude="generated/*"
+        run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/" --bucket_name="${{ inputs.S3_BUCKET_NAME }}" --delete_exclude="generated/*"
         shell: bash
