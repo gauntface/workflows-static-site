@@ -70,7 +70,9 @@ jobs:
     # Do our work
     - name: Generate images 🖼️
       if: ${{ inputs.ENVIRONMENT == 'production' }}
-      run: genimgs
+      run: |
+        cd ./hugo-site/
+        genimgs
     - name: Build 🔧
       if: always()
       run: |
