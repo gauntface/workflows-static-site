@@ -40,7 +40,6 @@ on:
   schedule:
     - cron:  '0 3 * * 0'
 
-# Test
 jobs:
   workflows:
     uses: gauntface/workflows-static-site/.github/workflows/hugo-deploy.yaml@main
