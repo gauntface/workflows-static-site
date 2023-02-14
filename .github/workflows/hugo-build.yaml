@@ -94,7 +94,6 @@ jobs:
         cd ./workflows-static-site/
         node ./tests/browser-tests.js
 
-
     - name: Update artifact 📦
       uses: actions/upload-artifact@v3
       if: ${{ inputs.ENVIRONMENT == 'production' }}
