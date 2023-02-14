@@ -100,3 +100,4 @@ jobs:
       with:
         name: hugo-site
         path: ./hugo-site/public/
+        retention-days: 1
