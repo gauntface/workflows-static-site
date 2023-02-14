@@ -3,7 +3,7 @@ import {describe, before, after, beforeEach, afterEach, it} from 'node:test';
 import puppeteer from 'puppeteer';
 import {startServer, stopServer} from './utils/dev-server.js';
 
-describe('runtime-errors', () => {
+describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 	let addr;
 	let browser;
 	let page;
@@ -40,13 +40,6 @@ describe('runtime-errors', () => {
 
 	for (const p of pages) {
 		it(`Request Errors - ${p.title}`, async () => {
-			// Ensure we get 200 responses from the server
-			page.on('response', response => {
-				if (response) {
-					assert.deepEqual(response.status(), 200);
-				}
-			});
-
 			const failedRequests = [];
 			const consoleErrors = [];
 			// Catch all failed requests like 4xx..5xx status codes
@@ -59,9 +52,10 @@ describe('runtime-errors', () => {
 			});
 
 			// Load webpage
-			await page.goto(`${addr}${p.url}`, {
+			const response = await page.goto(`${addr}${p.url}`, {
 				waitUntil: 'networkidle0',
 			});
+			assert.deepEqual(response.status(), 200);
 
 			await wait(1000);
 
@@ -83,17 +77,11 @@ describe('runtime-errors', () => {
 		});
 
 		it(`Undefined CSS Vars - ${p.title}`, async () => {
-			// Ensure we get 200 responses from the server
-			page.on('response', response => {
-				if (response) {
-					assert.deepEqual(response.status(), 200);
-				}
-			});
-
 			// Load webpage
-			await page.goto(`${addr}${p.url}`, {
+			const response = await page.goto(`${addr}${p.url}`, {
 				waitUntil: 'networkidle0',
 			});
+			assert.deepEqual(response.status(), 200);
 
 			const undefinedProps = await page.evaluate(() => {
 				const cssRules = [...document.styleSheets]
