@@ -78,14 +78,22 @@ jobs:
       run: |
         cd ./hugo-site/
         hugo
-        node ../workflows-static-site/postcss.js
+        node ../workflows-static-site/src/postcss.js
         htmlassets --vimeo=$VIMEO_TOKEN
         minify -r --match=\\.html -o ./public ./public/*
-    - name: Test 🧪
+    - name: Project Tests 🧪
       if: always()
       run: |
         cd ./hugo-site/
         npm run test --if-present
+    - name: Action Tests 🧪
+      if: always()
+      env:
+        WORKFLOWS_SITE_PATH: '../hugo-site/public/'
+      run: |
+        cd ./workflows-static-site/
+        node ./tests/browser-tests.js
+
 
     - name: Update artifact 📦
       uses: actions/upload-artifact@v3
