@@ -46,5 +46,6 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
-      S3_BUCKET_NAME: <S3 Bucket Name Here>
+      deploy: true
+      s3_bucket_name: <S3 Bucket Name Here>
 ```

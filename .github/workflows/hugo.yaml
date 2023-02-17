@@ -9,10 +9,10 @@ on:
         required: true
       VIMEO_TOKEN:
     inputs:
-      ENVIRONMENT:
-        type: string
-        default: 'test'
-      S3_BUCKET_NAME:
+      deploy:
+        type: boolean
+        default: false
+      s3_bucket_name:
         type: 'string'
 
 jobs:
@@ -85,7 +85,7 @@ jobs:
 
 
     - name: Generate images 🖼️
-      if: ${{ inputs.ENVIRONMENT == 'production' }}
+      if: ${{ inputs.deploy == true }}
       run: |
         cd ./hugo-site/
         genimgs
@@ -111,7 +111,7 @@ jobs:
         cd ./workflows-static-site/
         node ./tests/browser-tests.js
 
-    - name: Publish to AWS 🌤️
-      if: ${{ inputs.ENVIRONMENT == 'production' && inputs.S3_BUCKET_NAME != '' }}
-      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/" --bucket_name="${{ inputs.S3_BUCKET_NAME }}" --delete_exclude="generated/*"
+    - name: Deploy to AWS 🌤️
+      if: ${{ inputs.deploy == true }}
+      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/" --bucket_name="${{ inputs.s3_bucket_name }}" --delete_exclude="generated/*"
       shell: bash
