@@ -1,4 +1,4 @@
-name: Hugo Build 🔧
+name: Hugo 🔧
 
 on:
   workflow_call:
@@ -12,6 +12,8 @@ on:
       ENVIRONMENT:
         type: string
         default: 'test'
+      S3_BUCKET_NAME:
+        type: 'string'
 
 jobs:
   workflows:
@@ -20,46 +22,63 @@ jobs:
   hugo-build:
     runs-on: ubuntu-latest
     steps:
-    # Install global tools
-    - name: Install Go  🛠️
-      uses: actions/setup-go@v3
-      with:
-        go-version: '^1.18.3'
-    - name: Install Hugo  🛠️
-      uses: peaceiris/actions-hugo@v2
-      with:
-        hugo-version: '0.101.0'
-
-    # Get the repos
     - name: Checkout workflow ⬇️
       uses: actions/checkout@v3
       with:
         repository: 'gauntface/workflows-static-site'
         path: 'workflows-static-site'
+
     - name: Checkout site ⬇️
       uses: actions/checkout@v3
       with:
         submodules: true
         path: 'hugo-site'
 
-    # Install action dependencies
+
+    - name: Install Go  🛠️
+      uses: actions/setup-go@v3
+      with:
+        go-version: '^1.18.3'
+
+    - name: Install Hugo  🛠️
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.101.0'
+
+
     - name: Install action Go Deps 🌎
       run: |
         go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
         go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
         go install github.com/tdewolff/minify/v2/cmd/minify@latest
+
     - name: Install action NPM Deps 🌎
       run: |
         cd ./workflows-static-site/
         npm install
 
-    # Install site dependencies
-    - name: Install NPM Deps 🌎
+    - name: Install site NPM Deps 🌎
       run: |
         cd ./hugo-site/
         npm install
 
-    # Configure AWS for genimgs and publish
+
+    - name: ESLint 🌟
+      run: |
+        cd ./workflows-static-site/
+        npm run eslint    -- '../hugo-site/' --no-error-on-unmatched-pattern
+
+    - name: Stylelint 🌟
+      run: |
+        cd ./workflows-static-site/
+        npm run stylelint -- '../hugo-site/**/*.css'
+
+    - name: Prettier 🌟
+      run: |
+        cd ./workflows-static-site/
+        npm run prettier -- '../hugo-site/**/*.css' --check
+
+
     - name: Configure AWS Credentials ☁️
       uses: aws-actions/configure-aws-credentials@v1-node16
       with:
@@ -67,12 +86,13 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1
 
-    # Do our work
+
     - name: Generate images 🖼️
       if: ${{ inputs.ENVIRONMENT == 'production' }}
       run: |
         cd ./hugo-site/
         genimgs
+
     - name: Build 🔧
       if: always()
       run: |
@@ -81,23 +101,20 @@ jobs:
         node ../workflows-static-site/src/postcss.js
         htmlassets --vimeo=$VIMEO_TOKEN
         minify -r --match=\\.html -o ./public ./public/*
+
     - name: Project Tests 🧪
-      if: always()
       run: |
         cd ./hugo-site/
         npm run test --if-present
+
     - name: Action Tests 🧪
-      if: always()
       env:
         WORKFLOWS_SITE_PATH: '../hugo-site/public/'
       run: |
         cd ./workflows-static-site/
         node ./tests/browser-tests.js
 
-    - name: Update artifact 📦
-      uses: actions/upload-artifact@v3
-      if: ${{ inputs.ENVIRONMENT == 'production' }}
-      with:
-        name: hugo-site
-        path: ./hugo-site/public/
-        retention-days: 1
+    - name: Publish to AWS 🌤️
+      if: ${{ inputs.ENVIRONMENT == 'production' && inputs.S3_BUCKET_NAME != '' }}
+      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/" --bucket_name="${{ inputs.S3_BUCKET_NAME }}" --delete_exclude="generated/*"
+      shell: bash
