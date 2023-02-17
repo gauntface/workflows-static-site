@@ -91,7 +91,6 @@ jobs:
         genimgs
 
     - name: Build 🔧
-      if: always()
       run: |
         cd ./hugo-site/
         hugo
