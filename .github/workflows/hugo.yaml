@@ -16,10 +16,7 @@ on:
         type: 'string'
 
 jobs:
-  workflows:
-    uses: gauntface/workflows-static-site/.github/workflows/lint.yaml@main
-
-  hugo-build:
+  hugo-workflow:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout workflow ⬇️
