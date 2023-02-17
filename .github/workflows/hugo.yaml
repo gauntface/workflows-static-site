@@ -20,25 +20,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout workflow ⬇️
-      uses: actions/checkout@v3
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       with:
         repository: 'gauntface/workflows-static-site'
         path: 'workflows-static-site'
 
     - name: Checkout site ⬇️
-      uses: actions/checkout@v3
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       with:
         submodules: true
         path: 'hugo-site'
 
 
     - name: Install Go  🛠️
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
       with:
         go-version: '^1.18.3'
 
     - name: Install Hugo  🛠️
-      uses: peaceiris/actions-hugo@v2
+      uses: peaceiris/actions-hugo@16361eb4acea8698b220b76c0d4e84e1fd22c61d # v2
       with:
         hugo-version: '0.101.0'
 
