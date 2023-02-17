@@ -113,5 +113,5 @@ jobs:
 
     - name: Deploy to AWS 🌤️
       if: ${{ inputs.deploy == true }}
-      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/" --bucket_name="${{ inputs.s3_bucket_name }}" --delete_exclude="generated/*"
+      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/public/" --bucket_name="${{ inputs.s3_bucket_name }}" --delete_exclude="generated/*"
       shell: bash
