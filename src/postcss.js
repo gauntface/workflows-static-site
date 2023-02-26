@@ -2,8 +2,6 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import * as path from 'path';
 
 import glob from 'glob';
-import postcssPresetEnv from 'postcss-preset-env';
-import postcssGlobalData from '@csstools/postcss-global-data';
 import postcss from 'postcss';
 import cssnano from 'cssnano';
 
@@ -35,12 +33,6 @@ async function generateVarsFile(varFiles) {
 async function start() {
 	const varFiles = glob.sync(path.join(SRC_DIR, '**', 'variables', '*.css'));
 	const plugins = [
-		postcssGlobalData({
-			files: varFiles,
-		}),
-		postcssPresetEnv({
-			preserve: true,
-		}),
 		cssnano(),
 	];
 	const processor = postcss(plugins);
