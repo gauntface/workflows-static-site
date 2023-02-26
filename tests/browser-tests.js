@@ -1,9 +1,9 @@
-import assert from 'node:assert';
-import {describe, before, after, beforeEach, afterEach, it} from 'node:test';
-import puppeteer from 'puppeteer';
-import {startServer, stopServer} from './utils/dev-server.js';
+import assert from "node:assert";
+import { describe, before, after, beforeEach, afterEach, it } from "node:test";
+import puppeteer from "puppeteer";
+import { startServer, stopServer } from "./utils/dev-server.js";
 
-describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
+describe("runtime-errors", { timeout: 2 * 60 * 1000 }, () => {
 	let addr;
 	let browser;
 	let page;
@@ -16,7 +16,7 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 		browser = await puppeteer.launch({
 			headless: true,
 		});
-	})
+	});
 
 	after(async () => {
 		stopServer();
@@ -33,8 +33,8 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 
 	const pages = [
 		{
-			title: 'index',
-			url: '/',
+			title: "index",
+			url: "/",
 		},
 	];
 
@@ -43,17 +43,17 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 			const failedRequests = [];
 			const consoleErrors = [];
 			// Catch all failed requests like 4xx..5xx status codes
-			page.on('requestfailed', request => {
+			page.on("requestfailed", (request) => {
 				failedRequests.push(request);
 			});
 			// Catch console log errors
-			page.on("pageerror", err => {
-				consoleErrors.push(err)
+			page.on("pageerror", (err) => {
+				consoleErrors.push(err);
 			});
 
 			// Load webpage
 			const response = await page.goto(`${addr}${p.url}`, {
-				waitUntil: 'networkidle0',
+				waitUntil: "networkidle0",
 			});
 			assert.deepEqual(response.status(), 200);
 
@@ -62,7 +62,11 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 			if (failedRequests.length > 0) {
 				console.log(`Failed network requests:`);
 				for (const fr of failedRequests) {
-					console.log(`    - url: ${fr.url()}, errText: ${fr.failure().errorText}, method: ${fr.method()}`);
+					console.log(
+						`    - url: ${fr.url()}, errText: ${
+							fr.failure().errorText
+						}, method: ${fr.method()}`
+					);
 				}
 			}
 			if (consoleErrors.length > 0) {
@@ -79,14 +83,17 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 		it(`Undefined CSS Vars - ${p.title}`, async () => {
 			// Load webpage
 			const response = await page.goto(`${addr}${p.url}`, {
-				waitUntil: 'networkidle0',
+				waitUntil: "networkidle0",
 			});
 			assert.deepEqual(response.status(), 200);
 
 			const undefinedProps = await page.evaluate(() => {
 				const cssRules = [...document.styleSheets]
 					// Remove third party sheets
-					.filter((sheet) => !sheet.href || sheet.href.indexOf(window.location.origin) === 0)
+					.filter(
+						(sheet) =>
+							!sheet.href || sheet.href.indexOf(window.location.origin) === 0
+					)
 					// Get all the CSS Rules
 					.reduce((finalArr, sheet) => finalArr.concat(...sheet.cssRules), [])
 					// Filter down to CSSStyleRule
@@ -95,13 +102,15 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 					.reduce((propValArr, rule) => {
 						const props = [...rule.style].map((propName) => [
 							propName.trim(),
-							rule.style.getPropertyValue(propName).trim()
+							rule.style.getPropertyValue(propName).trim(),
 						]);
 						return [...propValArr, ...props];
 					}, []);
 
 				const customProps = {};
-				const propRules = cssRules.filter(([propName]) => propName.indexOf("--") === 0);
+				const propRules = cssRules.filter(
+					([propName]) => propName.indexOf("--") === 0
+				);
 				for (const [name, value] of propRules) {
 					customProps[name] = value;
 				}
@@ -140,5 +149,5 @@ describe('runtime-errors', { timeout: 2 * 60 * 1000 }, () => {
 });
 
 function wait(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms))
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }

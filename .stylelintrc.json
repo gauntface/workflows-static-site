@@ -1,13 +1,13 @@
 {
-  "extends": "stylelint-config-standard",
-  "rules": {
-    "selector-class-pattern": "^([a-z][a-z0-9]*)([-_]+[a-z0-9]+)*$",
-    "selector-id-pattern": "^([a-z][a-z0-9]*)([-_]+[a-z0-9]+)*$"
-  },
-  "ignoreFiles": [
-    "themes/styleguide/**/*",
-    "themes/base-theme/**/*",
-    "tmp/**/*",
-    "public/**/*"
-  ]
+	"extends": "stylelint-config-standard",
+	"rules": {
+		"selector-class-pattern": "^([a-z][a-z0-9]*)([-_]+[a-z0-9]+)*$",
+		"selector-id-pattern": "^([a-z][a-z0-9]*)([-_]+[a-z0-9]+)*$"
+	},
+	"ignoreFiles": [
+		"themes/styleguide/**/*",
+		"themes/base-theme/**/*",
+		"tmp/**/*",
+		"public/**/*"
+	]
 }

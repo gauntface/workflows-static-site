@@ -36,7 +36,7 @@ name: Publish
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 3 * * 0'
+    - cron: "0 3 * * 0"
 
 jobs:
   hugo:

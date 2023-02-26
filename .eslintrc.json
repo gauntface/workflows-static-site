@@ -1,8 +1,5 @@
 {
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended"
-	],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
 	"parserOptions": {
 		"sourceType": "module"
 	},
@@ -12,7 +9,7 @@
 		"es2021": true
 	},
 	"rules": {
-    "indent": ["error", "tab"],
+		"indent": ["error", "tab"],
 		"no-tabs": "off"
 	}
 }

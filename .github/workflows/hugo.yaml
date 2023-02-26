@@ -13,104 +13,99 @@ on:
         type: boolean
         default: false
       s3_bucket_name:
-        type: 'string'
+        type: "string"
 
 jobs:
   hugo-workflow:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout workflow ⬇️
-      uses: actions/checkout@v3
-      with:
-        repository: 'gauntface/workflows-static-site'
-        path: 'workflows-static-site'
+      - name: Checkout workflow ⬇️
+        uses: actions/checkout@v3
+        with:
+          repository: "gauntface/workflows-static-site"
+          path: "workflows-static-site"
 
-    - name: Checkout site ⬇️
-      uses: actions/checkout@v3
-      with:
-        submodules: true
-        path: 'hugo-site'
+      - name: Checkout site ⬇️
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          path: "hugo-site"
 
+      - name: Install Go  🛠️
+        uses: actions/setup-go@v3
+        with:
+          go-version: "^1.18.3"
 
-    - name: Install Go  🛠️
-      uses: actions/setup-go@v3
-      with:
-        go-version: '^1.18.3'
+      - name: Install Hugo  🛠️
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: "0.101.0"
 
-    - name: Install Hugo  🛠️
-      uses: peaceiris/actions-hugo@v2
-      with:
-        hugo-version: '0.101.0'
+      - name: Install action Go Deps 🌎
+        run: |
+          go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
+          go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
+          go install github.com/tdewolff/minify/v2/cmd/minify@latest
 
+      - name: Install action NPM Deps 🌎
+        run: |
+          cd ./workflows-static-site/
+          npm install
 
-    - name: Install action Go Deps 🌎
-      run: |
-        go install github.com/gauntface/go-html-asset-manager/v4/cmds/htmlassets@latest
-        go install github.com/gauntface/go-html-asset-manager/v4/cmds/genimgs@latest
-        go install github.com/tdewolff/minify/v2/cmd/minify@latest
+      - name: Install site NPM Deps 🌎
+        run: |
+          cd ./hugo-site/
+          npm install
 
-    - name: Install action NPM Deps 🌎
-      run: |
-        cd ./workflows-static-site/
-        npm install
+      - name: ESLint 🌟
+        run: |
+          cd ./workflows-static-site/
+          npm run eslint    -- '../hugo-site/' --no-error-on-unmatched-pattern
 
-    - name: Install site NPM Deps 🌎
-      run: |
-        cd ./hugo-site/
-        npm install
+      - name: Stylelint 🌟
+        run: |
+          cd ./workflows-static-site/
+          npm run stylelint -- '../hugo-site/**/*.css'
 
+      - name: Prettier 🌟
+        run: |
+          cd ./workflows-static-site/
+          npm run prettier -- '../hugo-site/**/*.css' --check
 
-    - name: ESLint 🌟
-      run: |
-        cd ./workflows-static-site/
-        npm run eslint    -- '../hugo-site/' --no-error-on-unmatched-pattern
+      - name: Configure AWS Credentials ☁️
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-1
 
-    - name: Stylelint 🌟
-      run: |
-        cd ./workflows-static-site/
-        npm run stylelint -- '../hugo-site/**/*.css'
+      - name: Generate images 🖼️
+        if: ${{ inputs.deploy == true }}
+        run: |
+          cd ./hugo-site/
+          genimgs
 
-    - name: Prettier 🌟
-      run: |
-        cd ./workflows-static-site/
-        npm run prettier -- '../hugo-site/**/*.css' --check
+      - name: Build 🔧
+        run: |
+          cd ./hugo-site/
+          hugo
+          node ../workflows-static-site/src/postcss.js
+          htmlassets --vimeo=$VIMEO_TOKEN
+          minify -r --match=\\.html -o ./public ./public/*
 
+      - name: Project Tests 🧪
+        run: |
+          cd ./hugo-site/
+          npm run test --if-present
 
-    - name: Configure AWS Credentials ☁️
-      uses: aws-actions/configure-aws-credentials@v1-node16
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1
+      - name: Action Tests 🧪
+        env:
+          WORKFLOWS_SITE_PATH: "../hugo-site/public/"
+        run: |
+          cd ./workflows-static-site/
+          node ./tests/browser-tests.js
 
-
-    - name: Generate images 🖼️
-      if: ${{ inputs.deploy == true }}
-      run: |
-        cd ./hugo-site/
-        genimgs
-
-    - name: Build 🔧
-      run: |
-        cd ./hugo-site/
-        hugo
-        node ../workflows-static-site/src/postcss.js
-        htmlassets --vimeo=$VIMEO_TOKEN
-        minify -r --match=\\.html -o ./public ./public/*
-
-    - name: Project Tests 🧪
-      run: |
-        cd ./hugo-site/
-        npm run test --if-present
-
-    - name: Action Tests 🧪
-      env:
-        WORKFLOWS_SITE_PATH: '../hugo-site/public/'
-      run: |
-        cd ./workflows-static-site/
-        node ./tests/browser-tests.js
-
-    - name: Deploy to AWS 🌤️
-      if: ${{ inputs.deploy == true }}
-      run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/public/" --bucket_name="${{ inputs.s3_bucket_name }}" --delete_exclude="generated/*"
-      shell: bash
+      - name: Deploy to AWS 🌤️
+        if: ${{ inputs.deploy == true }}
+        run: npx --package @gauntface/cli gauntface aws s3 deploy-static-site --directory="./hugo-site/public/" --bucket_name="${{ inputs.s3_bucket_name }}" --delete_exclude="generated/*"
+        shell: bash

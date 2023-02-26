@@ -1,22 +1,22 @@
 {
-  "scripts": {
-    "eslint": "eslint --config './.eslintrc.json'",
-    "stylelint": "stylelint --config './.stylelintrc.json'",
-    "prettier": "prettier --config './.prettierrc.json'"
-  },
-  "devDependencies": {
-    "@csstools/postcss-global-data": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "cssnano": "^5.1.14",
-    "eslint": "^8.34.0",
-    "postcss": "^8.4.21",
-    "postcss-preset-env": "^8.0.1",
-    "prettier": "^2.8.4",
-    "puppeteer": "^19.7.0",
-    "static-server": "^2.2.1",
-    "stylelint": "^15.0.0",
-    "stylelint-config": "^0.1.1",
-    "stylelint-config-standard": "^30.0.1"
-  },
-  "type": "module"
+	"scripts": {
+		"eslint": "eslint --config './.eslintrc.json'",
+		"stylelint": "stylelint --config './.stylelintrc.json'",
+		"prettier": "prettier --config './.prettierrc.json'"
+	},
+	"devDependencies": {
+		"@csstools/postcss-global-data": "^1.0.1",
+		"@typescript-eslint/eslint-plugin": "^5.51.0",
+		"cssnano": "^5.1.14",
+		"eslint": "^8.34.0",
+		"postcss": "^8.4.21",
+		"postcss-preset-env": "^8.0.1",
+		"prettier": "^2.8.4",
+		"puppeteer": "^19.7.0",
+		"static-server": "^2.2.1",
+		"stylelint": "^15.0.0",
+		"stylelint-config": "^0.1.1",
+		"stylelint-config-standard": "^30.0.1"
+	},
+	"type": "module"
 }

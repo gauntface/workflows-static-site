@@ -1,8 +1,10 @@
-import StaticServer from 'static-server';
+import StaticServer from "static-server";
 
-const sitePath = process.env['WORKFLOWS_SITE_PATH'];
+const sitePath = process.env["WORKFLOWS_SITE_PATH"];
 if (!sitePath) {
-	throw new Error('To use theses tests you must defined the `WORKFLOWS_SITE_PATH` environment variable.');
+	throw new Error(
+		"To use theses tests you must defined the `WORKFLOWS_SITE_PATH` environment variable."
+	);
 }
 
 const server = new StaticServer({
@@ -15,7 +17,7 @@ export function startServer() {
 		server.start(() => {
 			console.log(`Using http://localhost:${server.port}`);
 			resolve(`http://localhost:${server.port}`);
-		})
+		});
 	});
 }
 
