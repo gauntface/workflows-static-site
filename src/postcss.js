@@ -31,7 +31,7 @@ async function generateVarsFile(varFiles) {
 }
 
 async function start() {
-	const varFiles = glob.sync(path.join(SRC_DIR, '**', 'variables', '*.css'));
+	const varFiles = glob.sync(path.join(SRC_DIR, '**', 'variables', '_*.css'));
 	const plugins = [
 		cssnano(),
 	];
