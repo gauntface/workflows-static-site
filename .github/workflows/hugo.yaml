@@ -108,7 +108,7 @@ jobs:
     - name: Minify HTML 🔧
       run: |
         cd ./hugo-site/public/
-        minify -r --match=".html" -o . ./*
+        minify -r --match="*.html" -o . ./*
 
     - name: Project Tests 🧪
       run: |
