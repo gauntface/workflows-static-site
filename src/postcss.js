@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "path";
-import postcssVarCompress from "postcss-variable-compress/splitFiles.js";
 
 import glob from "glob";
 import postcss from "postcss";
@@ -33,7 +32,7 @@ async function generateVarsFile(varFiles) {
 
 async function start() {
 	const varFiles = glob.sync(path.join(SRC_DIR, "**", "variables", "_*.css"));
-	const plugins = [cssnano(), postcssVarCompress()];
+	const plugins = [cssnano()];
 	const processor = postcss(plugins);
 
 	const cssFiles = glob.sync(path.join(BUILD_DIR, "**", "*.css"));
