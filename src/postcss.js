@@ -1,20 +1,21 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import * as path from 'path';
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import * as path from "path";
+import postcssVarCompress from "postcss-variable-compress/splitFiles.js";
 
-import glob from 'glob';
-import postcss from 'postcss';
-import cssnano from 'cssnano';
+import glob from "glob";
+import postcss from "postcss";
+import cssnano from "cssnano";
 
-const SRC_DIR = 'themes';
-const BUILD_DIR = 'public';
+const SRC_DIR = "themes";
+const BUILD_DIR = "public";
 
 async function generateVarsFile(varFiles) {
 	if (varFiles.length == 0) {
 		return null;
 	}
 
-	const varDir = path.join(BUILD_DIR, 'css', '__generated__', 'variables');
-	const varFilePath = path.join(varDir, 'always.css');
+	const varDir = path.join(BUILD_DIR, "css", "__generated__", "variables");
+	const varFilePath = path.join(varDir, "always.css");
 	try {
 		await mkdir(varDir, {
 			recursive: true,
@@ -31,20 +32,18 @@ async function generateVarsFile(varFiles) {
 }
 
 async function start() {
-	const varFiles = glob.sync(path.join(SRC_DIR, '**', 'variables', '_*.css'));
-	const plugins = [
-		cssnano(),
-	];
+	const varFiles = glob.sync(path.join(SRC_DIR, "**", "variables", "_*.css"));
+	const plugins = [cssnano(), postcssVarCompress()];
 	const processor = postcss(plugins);
 
-	const cssFiles = glob.sync(path.join(BUILD_DIR, '**', '*.css'));
+	const cssFiles = glob.sync(path.join(BUILD_DIR, "**", "*.css"));
 	const vfp = await generateVarsFile(varFiles);
 	if (vfp) {
 		cssFiles.push(vfp);
 	}
 
 	for (const c of cssFiles) {
-		if (path.basename(c).indexOf('_') == 0) {
+		if (path.basename(c).indexOf("_") == 0) {
 			// Skip files starting with underscore
 			continue;
 		}

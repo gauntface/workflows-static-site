@@ -9,6 +9,7 @@
     "cssnano": "^5.1.14",
     "eslint": "^8.34.0",
     "postcss": "^8.4.21",
+    "postcss-variable-compress": "^3.0.0",
     "prettier": "^2.8.4",
     "puppeteer": "^19.7.0",
     "static-server": "^2.2.1",
