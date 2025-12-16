@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "path";
+import postcssVarCompress from "postcss-variable-compress/splitFiles.js";
 
 import glob from "glob";
 import postcss from "postcss";
@@ -32,7 +33,7 @@ async function generateVarsFile(varFiles) {
 
 async function start() {
 	const varFiles = glob.sync(path.join(SRC_DIR, "**", "variables", "_*.css"));
-	const plugins = [cssnano()];
+	const plugins = [cssnano(), postcssVarCompress()];
 	const processor = postcss(plugins);
 
 	const cssFiles = glob.sync(path.join(BUILD_DIR, "**", "*.css"));
@@ -48,7 +49,9 @@ async function start() {
 		}
 
 		const css = await readFile(c);
+		console.log(`Processing ${c}`);
 		const result = await processor.process(css, { from: c });
+		console.log(`Result ${result.css}`);
 		await writeFile(c, result.css);
 	}
 }
