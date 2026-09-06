@@ -20,28 +20,28 @@ jobs:
     # Needed to make puppeteer work on GitHub Actions
     # See https://github.com/puppeteer/puppeteer/issues/12818
     # runs-on: ubuntu-latest
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout workflow ⬇️
-      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: 'gauntface/workflows-static-site'
         path: 'workflows-static-site'
 
     - name: Checkout site ⬇️
-      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         submodules: true
         path: 'hugo-site'
 
 
     - name: Install Go  🛠️
-      uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
       with:
         go-version: '^1.18.3'
 
     - name: Install Hugo  🛠️
-      uses: peaceiris/actions-hugo@16361eb4acea8698b220b76c0d4e84e1fd22c61d # v2
+      uses: peaceiris/actions-hugo@2752ce1d29631191ea3f27c23495fa06139a5b78 # v3
       with:
         hugo-version: '0.152.2'
 
@@ -80,7 +80,7 @@ jobs:
 
 
     - name: Configure AWS Credentials ☁️
-      uses: aws-actions/configure-aws-credentials@v1-node16
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef # v1-node16
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
