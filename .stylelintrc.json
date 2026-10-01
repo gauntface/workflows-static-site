@@ -6,7 +6,7 @@
   },
   "ignoreFiles": [
     "themes/styleguide/**/*",
-    "**/themes/styleguide/**/*",
+    "/**/themes/styleguide/**/*",
     "themes/base-theme/**/*",
     "tmp/**/*",
     "public/**/*"
